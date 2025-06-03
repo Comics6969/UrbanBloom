@@ -137,3 +137,79 @@ footer a:hover {
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
   transition: filter 2s ease, box-shadow 2s ease;
 }
+
+.nighttime {
+  background-color: #0b1636;
+  transition: background-color 2s ease;
+  color: #eee; /* light text for night */
+}
+
+.nighttime h1,
+.nighttime p,
+.nighttime .status-box,
+.nighttime footer {
+  color: #ddd; /* lighter text for all these */
+}
+
+.building.dragging {
+  opacity: 0.5;
+}
+
+.building.over {
+  border: 2px dashed #3498db;
+}
+.delete-btn {
+  position: absolute;
+  top: 2px;
+  right: 1px;
+  background: transparent;
+  border: none;
+  font-size: 10px;
+  cursor: pointer;
+  color: #c0392b;
+  z-index: 1;
+}
+
+.building {
+  position: relative;
+  width: 60px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hide the YouTube iframe container completely */
+#player {
+  position: fixed;
+  bottom: 10px; /* Just in case you want to nudge it in a corner */
+  right: 10px;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none; /* So it doesn't interfere with clicks */
+  z-index: 1000; /* Make sure it's on top but invisible */
+}
+
+/* Style the play/pause toggle button */
+#toggle-music {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  background-color: #222;
+  color: #eee;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  z-index: 1001; /* Above player */
+}
+
+#toggle-music:hover {
+  opacity: 1;
+  background-color: #444;
+}
