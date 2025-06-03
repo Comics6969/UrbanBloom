@@ -1,0 +1,139 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #e6f0ff;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  color: #34495e;
+  margin-top: 1rem;
+}
+
+p {
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+#city {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1rem auto;
+  max-width: 90vw;
+}
+
+.building {
+  width: 40px;
+  height: 40px;
+  background-color: #3498db;
+  margin: 4px;
+  border-radius: 4px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.building:hover {
+  transform: scale(1.2);
+}
+
+.label {
+  font-size: 10px;      /* Smaller font */
+  color: #555;          /* Slightly softer text colour */
+  margin-top: 2px;      /* Less gap */
+  line-height: 1;       /* Tighter line spacing */
+  text-align: center;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+footer {
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ccc;
+  text-align: center;
+}
+
+footer a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.status-box {
+  margin: 0 auto 1rem auto;  /* Auto left & right margins center the box */
+  padding: 0.75rem 1rem;
+  background-color: #fefefe;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #333;
+  font-size: 14px;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.building {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;    /* slightly bigger to fit label */
+  height: 70px;   /* more height for label */
+  background-color: #3498db;
+  margin: 4px;
+  border-radius: 4px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.emoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+/* Daytime vibe */
+.daytime {
+  background-color: #a0c8ff; /* Bright sky blue */
+  transition: background-color 2s ease;
+}
+
+/* Nighttime vibe */
+.nighttime {
+  background-color: #0b1636; /* Dark midnight blue */
+  transition: background-color 2s ease;
+}
+
+/* Night glow effect on buildings */
+.nighttime .building {
+  filter: brightness(0.6);
+  box-shadow: 0 0 8px 2px rgba(255, 255, 150, 0.8);
+  transition: filter 2s ease, box-shadow 2s ease;
+}
+
+.daytime .building {
+  filter: brightness(1);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  transition: filter 2s ease, box-shadow 2s ease;
+}
