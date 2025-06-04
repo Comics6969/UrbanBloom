@@ -44,10 +44,7 @@ document.querySelectorAll('.event').forEach(el => {
     }
   });
 });
-
-
 function startRain() {
-  // Create container div for raindrops if not present
   let rainContainer = document.querySelector('.rain-container');
   if (!rainContainer) {
     rainContainer = document.createElement('div');
@@ -55,20 +52,18 @@ function startRain() {
     document.body.appendChild(rainContainer);
   }
 
-  // Generate raindrops
-  for (let i = 0; i < 100; i++) {  // tweak number for intensity
+  for (let i = 0; i < 100; i++) {
     const drop = document.createElement('div');
     drop.className = 'raindrop';
     drop.style.left = Math.random() * 100 + 'vw';
-    drop.style.animationDuration = (Math.random() * 0.5 + 0.75) + 's'; // 0.75s to 1.25s
+    drop.style.animationDuration = (Math.random() * 0.5 + 0.75) + 's';
     drop.style.animationDelay = (Math.random() * 2) + 's';
     rainContainer.appendChild(drop);
   }
 
-  // Stop rain after 15 seconds (optional)
   setTimeout(() => {
     rainContainer.remove();
-  }, 15000);
+  }, 15000); // stops rain after 15 seconds
 }
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 1 day in ms
