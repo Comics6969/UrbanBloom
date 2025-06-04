@@ -213,3 +213,39 @@ footer a:hover {
   opacity: 1;
   background-color: #444;
 }
+
+.nighttime .label,
+.nighttime .emoji {
+  color: #fff !important;
+  text-shadow: 0 0 3px #000;
+}
+
+.nighttime .status-box {
+  background-color: #1e2a47; /* dark blue-gray */
+  color: #f0f8ff; /* soft light blue text */
+  border-color: #3d4f7c;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+.nighttime .status-box {
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+#community-events-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ffcc00;
+  color: #222;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 1001;
+}
+
+#community-events-btn:hover {
+  background-color: #f1c40f;
+}

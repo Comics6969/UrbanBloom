@@ -224,3 +224,7 @@ document.getElementById('toggle-music').addEventListener('click', () => {
     }
   }
 });
+
+document.getElementById('community-events-btn').addEventListener('click', () => {
+  window.location.href = 'community.html'; // or whatever your page is called
+});
