@@ -6,6 +6,108 @@ function getVisitCount() {
 function setVisitCount(count) {
   localStorage.setItem('urbanBloomVisits', count);
 }
+
+function getCurrentSeason() {
+  const month = new Date().getMonth() + 1;
+  if (month >= 3 && month <= 5) return 'spring';
+  if (month >= 6 && month <= 8) return 'summer';
+  if (month >= 9 && month <= 11) return 'autumn';
+  return 'winter';
+}
+
+function updateWeatherSeasonDisplay() {
+  const season = getCurrentSeason();
+
+  const weatherBySeason = {
+    spring: "🌦️ Light Showers, 15°C",
+    summer: "☀️ Sunny, 28°C",
+    autumn: "🍂 Windy, 12°C",
+    winter: "❄️ Snowy, -3°C",
+  };
+
+  const funWeatherBySeason = {
+    spring: () => "🌷 UrbanBloom’s calling it Spring — time to bloom, baby!",
+    summer: () => "☀️ UrbanBloom’s shining bright — don’t forget your shades!",
+    autumn: () => "🍂 UrbanBloom’s rocking Autumn — leaves are falling, so chill too.",
+    winter: () => "❄️ UrbanBloom’s snowy vibes — stay cozy, legends!",
+  };
+
+  const seasonDisplay = document.getElementById('season-display');
+  const weatherDisplay = document.getElementById('weather-display');
+
+  console.log("Season is:", season);
+  console.log("Season Element:", seasonDisplay);
+  console.log("Weather Element:", weatherDisplay);
+
+  if (seasonDisplay && weatherDisplay) {
+    seasonDisplay.textContent = `UrbanBloom's current Season: ${season.charAt(0).toUpperCase() + season.slice(1)}`;
+    weatherDisplay.textContent = `UrbanBloom's current Weather: ${funWeatherBySeason[season]()}`;
+  } else {
+    console.warn("⚠️ Missing display elements!");
+  }
+}
+
+function updateDateTimeDisplay() {
+  const now = new Date();
+
+  // Options for pretty formatting
+  const options = {
+    weekday: 'long',  // e.g., Monday
+    year: 'numeric',  // 2025
+    month: 'long',    // June
+    day: 'numeric',   // 5
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false     // 24-hour format, switch to true for AM/PM vibes
+  };
+
+  const formattedDateTime = now.toLocaleString('en-AU', options);
+
+  const datetimeDisplay = document.getElementById('datetime-display');
+  if (datetimeDisplay) {
+    datetimeDisplay.textContent = `🕒 UrbanBloom Time: ${formattedDateTime}`;
+  } else {
+    console.warn("⚠️ No #datetime-display element found!");
+  }
+}
+
+// Call it once to avoid blank on load
+updateDateTimeDisplay();
+
+// Update every second for live vibes
+setInterval(updateDateTimeDisplay, 1000);
+
+function updateDateTimeDisplay() {
+  const now = new Date();
+
+  const options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  };
+
+  const formattedDateTime = now.toLocaleString('en-AU', options);
+
+  const datetimeDisplay = document.getElementById('datetime-display');
+  if (datetimeDisplay) {
+    datetimeDisplay.textContent = `🕒 UrbanBloom Time: ${formattedDateTime}`;
+  }
+
+  // Calculate ms until next second exactly
+  const delay = 1000 - now.getMilliseconds();
+
+  // Schedule the next update exactly at the next second boundary
+  setTimeout(updateDateTimeDisplay, delay);
+}
+
+// Start it off
+updateDateTimeDisplay();
 function growCity() {
   const cityElements = [
     { emoji: '🏠', name: 'House', color: '#ffebcd' },
@@ -20,6 +122,13 @@ function growCity() {
     { emoji: '🏬', name: 'Mall', color: '#f0e6ff' },
   ];
 
+  function getCurrentSeason() {
+  const month = new Date().getMonth() + 1;
+  if (month >= 3 && month <= 5) return 'spring';
+  if (month >= 6 && month <= 8) return 'summer';
+  if (month >= 9 && month <= 11) return 'autumn';
+  return 'winter';
+}
   let visitCount = getVisitCount();
   let buildOrder = [];
 
@@ -160,10 +269,6 @@ function growCity() {
   `;
 }
 
-// Kick it all off!
-growCity();
-startDayNightCycle();
-
 function startDayNightCycle() {
   const body = document.body;
   let isDay = true;
@@ -228,3 +333,62 @@ document.getElementById('toggle-music').addEventListener('click', () => {
 document.getElementById('community-events-btn').addEventListener('click', () => {
   window.location.href = 'community.html'; // or whatever your page is called
 });
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'urbanBloomOrder' || e.key === 'urbanBloomVisits') {
+   growCity();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  growCity();
+  updateWeatherSeasonDisplay();
+  startDayNightCycle();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  growCity(); // your main city build logic
+  updateWeatherSeasonDisplay(); // make weather show up
+});
+
+// Kick it all off!
+growCity();
+updateWeatherSeasonDisplay();
+startDayNightCycle();
+displayHolidays();
+
+window.onload = function () {
+  growCity(); // or however you're initializing things
+  updateWeatherSeasonDisplay(); // MUST be called here
+};
+
+function displayHolidays() {
+  const holidayList = document.getElementById('holiday-list');
+  const currentMonth = new Date().getMonth(); // 0-indexed
+
+   const holidays = [
+  { date: 'January 1', month: 0, name: "🎉 Bloom Year's Day", desc: "Start fresh with fireworks and confetti!" },
+  { date: 'February 14', month: 1, name: "💖🌳 LoveTree Day", desc: "Plant trees for your loved ones!" },
+  { date: 'April 22', month: 3, name: "🌍 EcoFest", desc: "Celebrate sustainability together!" },
+  { date: 'July 20', month: 6, name: "☀️ Sunny Bash", desc: "Fun, music, and sunshine!" },
+  { date: 'October 31', month: 9, name: "🎃 Halloween", desc: "Glowing costumes and spooky vibes!" },
+  { date: 'December 24', month: 11, name: "❄️ Christmas", desc: "Lanterns, peace, and snow." },
+  { date: 'June 3', month: 5, name: "🌸 UrbanBloom Birthday", desc: "Celebrating the day UrbanBloom sprang to life at 19:11!" },
+  { date: 'January 27', month: 0, name: "✨ Digital Spark Festival", desc: "Celebrate the city going online — and secret sparks of genius!" },
+];
+
+  // Filter holidays for current month
+  const thisMonthHolidays = holidays.filter(h => h.month === currentMonth);
+
+  holidayList.innerHTML = '';
+
+  if (thisMonthHolidays.length === 0) {
+    holidayList.innerHTML = '<li>No special events this month... maybe invent one? 😜</li>';
+  } else {
+    thisMonthHolidays.forEach(h => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${h.name}</strong> (${h.date}) – ${h.desc}`;
+      holidayList.appendChild(li);
+    });
+  }
+}
