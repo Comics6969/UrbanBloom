@@ -1,30 +1,41 @@
-function getVisitCount() {
-  const visits = localStorage.getItem('urbanBloomVisits');
-  return visits ? parseInt(visits) : 0;
+// Firebase setup
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPv05k1HLn_aL_gzimL3xxDO80-Vg-qBc",
+  authDomain: "urbanbloom-1234.firebaseapp.com",
+  projectId: "urbanbloom-1234",
+  storageBucket: "urbanbloom-1234.firebasestorage.app",
+  messagingSenderId: "635582243597",
+  appId: "1:635582243597:web:8448352c82cb2323144644",
+  measurementId: "G-LEV0YBZFPZ"
+};
+
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app); // Use 'database' consistently for the database instance
+
+async function getVisitCount() {
+  const snapshot = await get(ref(database, "visits"));
+  const visits = snapshot.exists() ? snapshot.val() : 0;
+  return parseInt(visits);
 }
 
-function setVisitCount(count) {
-  localStorage.setItem('urbanBloomVisits', count);
+async function setVisitCount(count) {
+  await set(ref(database, "visits"), count);
 }
 
 function getCurrentSeason() {
   const month = new Date().getMonth() + 1;
-  if (month >= 3 && month <= 5) return 'spring';
-  if (month >= 6 && month <= 8) return 'summer';
-  if (month >= 9 && month <= 11) return 'autumn';
-  return 'winter';
+  // Based on Adelaide, Australia (Southern Hemisphere) seasons
+  if (month >= 3 && month <= 5) return 'autumn'; // March, April, May
+  if (month >= 6 && month <= 8) return 'winter'; // June, July, August
+  if (month >= 9 && month <= 11) return 'spring'; // September, October, November
+  return 'summer'; // December, January, February
 }
 
 function updateWeatherSeasonDisplay() {
   const season = getCurrentSeason();
-
-  const weatherBySeason = {
-    spring: "🌦️ Light Showers, 15°C",
-    summer: "☀️ Sunny, 28°C",
-    autumn: "🍂 Windy, 12°C",
-    winter: "❄️ Snowy, -3°C",
-  };
-
   const funWeatherBySeason = {
     spring: () => "🌷 UrbanBloom’s calling it Spring — time to bloom, baby!",
     summer: () => "☀️ UrbanBloom’s shining bright — don’t forget your shades!",
@@ -35,80 +46,26 @@ function updateWeatherSeasonDisplay() {
   const seasonDisplay = document.getElementById('season-display');
   const weatherDisplay = document.getElementById('weather-display');
 
-  console.log("Season is:", season);
-  console.log("Season Element:", seasonDisplay);
-  console.log("Weather Element:", weatherDisplay);
-
   if (seasonDisplay && weatherDisplay) {
     seasonDisplay.textContent = `UrbanBloom's current Season: ${season.charAt(0).toUpperCase() + season.slice(1)}`;
     weatherDisplay.textContent = `UrbanBloom's current Weather: ${funWeatherBySeason[season]()}`;
-  } else {
-    console.warn("⚠️ Missing display elements!");
   }
 }
 
 function updateDateTimeDisplay() {
   const now = new Date();
-
-  // Options for pretty formatting
   const options = {
-    weekday: 'long',  // e.g., Monday
-    year: 'numeric',  // 2025
-    month: 'long',    // June
-    day: 'numeric',   // 5
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false     // 24-hour format, switch to true for AM/PM vibes
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
   };
-
-  const formattedDateTime = now.toLocaleString('en-AU', options);
-
-  const datetimeDisplay = document.getElementById('datetime-display');
-  if (datetimeDisplay) {
-    datetimeDisplay.textContent = `🕒 UrbanBloom Time: ${formattedDateTime}`;
-  } else {
-    console.warn("⚠️ No #datetime-display element found!");
-  }
+  // Ensure 'en-AU' for Australian locale
+  const formatted = now.toLocaleString('en-AU', options);
+  const dtEl = document.getElementById('datetime-display');
+  if (dtEl) dtEl.textContent = `🕒 UrbanBloom Time: ${formatted}`;
+  setTimeout(updateDateTimeDisplay, 1000 - now.getMilliseconds());
 }
 
-// Call it once to avoid blank on load
-updateDateTimeDisplay();
-
-// Update every second for live vibes
-setInterval(updateDateTimeDisplay, 1000);
-
-function updateDateTimeDisplay() {
-  const now = new Date();
-
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  };
-
-  const formattedDateTime = now.toLocaleString('en-AU', options);
-
-  const datetimeDisplay = document.getElementById('datetime-display');
-  if (datetimeDisplay) {
-    datetimeDisplay.textContent = `🕒 UrbanBloom Time: ${formattedDateTime}`;
-  }
-
-  // Calculate ms until next second exactly
-  const delay = 1000 - now.getMilliseconds();
-
-  // Schedule the next update exactly at the next second boundary
-  setTimeout(updateDateTimeDisplay, delay);
-}
-
-// Start it off
-updateDateTimeDisplay();
-function growCity() {
+async function growCity() {
   const cityElements = [
     { emoji: '🏠', name: 'House', color: '#ffebcd' },
     { emoji: '🌳', name: 'Park', color: '#b2f7b2' },
@@ -122,52 +79,38 @@ function growCity() {
     { emoji: '🏬', name: 'Mall', color: '#f0e6ff' },
   ];
 
-  function getCurrentSeason() {
-  const month = new Date().getMonth() + 1;
-  if (month >= 3 && month <= 5) return 'spring';
-  if (month >= 6 && month <= 8) return 'summer';
-  if (month >= 9 && month <= 11) return 'autumn';
-  return 'winter';
-}
-  let visitCount = getVisitCount();
+  let visitCount = await getVisitCount();
   let buildOrder = [];
 
-  // Load saved order
-  const savedOrderRaw = localStorage.getItem('urbanBloomOrder');
-  if (savedOrderRaw) {
-    try {
-      const savedOrder = JSON.parse(savedOrderRaw);
-      if (Array.isArray(savedOrder) && savedOrder.length > 0) {
-        buildOrder = savedOrder
-          .map(name => cityElements.find(el => el.name === name))
-          .filter(Boolean);
-        // Grow the city by adding 1 new building
-        visitCount = Math.max(visitCount, buildOrder.length) + 1;
-      }
-    } catch {
-      buildOrder = [];
-      visitCount++;
-    }
+  const snap = await get(ref(database, "buildOrder")); // Use 'database'
+  const savedOrderNames = snap.exists() ? snap.val() : [];
+
+  // Reconstruct buildOrder from saved names, filtering out any unknown names
+  if (Array.isArray(savedOrderNames) && savedOrderNames.length > 0) {
+    buildOrder = savedOrderNames.map(name => cityElements.find(el => el.name === name)).filter(Boolean);
+    // Ensure visitCount is at least one more than the current number of buildings to add a new one
+    visitCount = Math.max(visitCount, buildOrder.length) + 1;
   } else {
+    // If no saved order or invalid, start fresh
     visitCount++;
   }
 
-  setVisitCount(visitCount);
+  await setVisitCount(visitCount);
 
   // Add the new building to the buildOrder if it isn't already there
+  // This logic ensures a new building is added for each visit if buildOrder is shorter than visitCount
   if (buildOrder.length < visitCount) {
     const newBuilding = cityElements[(visitCount - 1) % cityElements.length];
     buildOrder.push(newBuilding);
   }
 
-  // Save updated order
-  localStorage.setItem('urbanBloomOrder', JSON.stringify(buildOrder.map(b => b.name)));
-
-  // ... rest of your growCity function building the city from buildOrder
+  // Save updated order (names only) back to Firebase
+  const orderNamesToSave = buildOrder.map(b => b.name);
+  await set(ref(database, "buildOrder"), orderNamesToSave);
 
   const city = document.getElementById('city');
   const status = document.getElementById('status');
-  city.innerHTML = '';
+  city.innerHTML = ''; // Clear existing city elements
 
   const counts = {};
   cityElements.forEach(item => counts[item.name] = 0);
@@ -195,7 +138,7 @@ function growCity() {
     this.classList.remove('over');
   }
 
-  function handleDrop(e) {
+  async function handleDrop(e) { // Made async to use await for Firebase
     if (e.stopPropagation) e.stopPropagation();
 
     if (dragSrcEl !== this) {
@@ -209,11 +152,11 @@ function growCity() {
       dragSrcEl.innerHTML = tempHTML;
       dragSrcEl.style.backgroundColor = tempBg;
 
-      // Save new order
+      // Save new order to Firebase
       const order = Array.from(city.children).map(child =>
         child.querySelector('.label').textContent
       );
-      localStorage.setItem('urbanBloomOrder', JSON.stringify(order));
+      await set(ref(database, "buildOrder"), order); // Use 'database' and await
     }
     return false;
   }
@@ -261,17 +204,22 @@ function growCity() {
     .map(([name, count]) => `${count} ${name}${count > 1 ? 's' : ''}`)
     .join(', ');
 
-  const newBuilding = cityElements[(visitCount - 1) % cityElements.length];
+  // The last added building for the status message
+  const lastAddedBuilding = buildOrder[buildOrder.length - 1];
+
   status.innerHTML = `
-    🌟 Visit #${visitCount}: ${newBuilding.emoji} ${newBuilding.name} added to the city!<br/>
-    🏙️ Total buildings: ${visitCount}<br/>
+    🌟 Visit #${visitCount}: ${lastAddedBuilding ? lastAddedBuilding.emoji + ' ' + lastAddedBuilding.name : 'A building'} added to the city!<br/>
+    🏙️ Total buildings: ${buildOrder.length}<br/>
     📊 Breakdown: ${countsSummary}
   `;
 }
 
 function startDayNightCycle() {
   const body = document.body;
-  let isDay = true;
+  let isDay = true; // Assume starting in day mode
+
+  // Set initial state (daytime class)
+  body.classList.add('daytime');
 
   setInterval(() => {
     if (isDay) {
@@ -285,7 +233,7 @@ function startDayNightCycle() {
   }, 60000); // Switch every 60 seconds
 }
 
-
+// YouTube Player and Radio Controls
 const stations = {
   urbanchill: { id: "7XXu_-eoxHo", name: "Urban Chill" },
   naturevibes: { id: "9GaBMZRHM3U", name: "Nature Vibes" },
@@ -294,13 +242,15 @@ const stations = {
 
 let currentStation = "urbanchill";
 let player;
+let noteInterval; // Declare noteInterval globally or accessible
 
-// Load the YouTube IFrame API
+// Load the YouTube IFrame API script
 const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
+tag.src = "https://www.youtube.com/iframe_api"; // Correct YouTube API URL
 document.body.appendChild(tag);
 
-function onYouTubeIframeAPIReady() {
+// This function is called by the YouTube IFrame API when it's ready
+window.onYouTubeIframeAPIReady = function() {
   player = new YT.Player('player', {
     height: '0',
     width: '0',
@@ -312,30 +262,16 @@ function onYouTubeIframeAPIReady() {
       controls: 0,
       modestbranding: 1,
       iv_load_policy: 3,
-      mute: 1
+      mute: 1 // Start muted
     },
     events: {
       onReady: (event) => {
+        // Play video, but keep muted initially. User will unmute via button.
         event.target.playVideo();
       }
     }
   });
-}
-
-// Toggle play/pause
-document.getElementById('toggle-radio').addEventListener('click', () => {
-  if (player) {
-    if (player.isMuted()) {
-      player.unMute();
-      player.playVideo();
-      document.getElementById('toggle-radio').textContent = 'Pause Radio';
-    } else {
-      player.pauseVideo();
-      player.mute();
-      document.getElementById('toggle-radio').textContent = 'Play Radio';
-    }
-
-    let noteInterval;
+};
 
 document.getElementById('toggle-radio').addEventListener('click', () => {
   if (player) {
@@ -345,17 +281,13 @@ document.getElementById('toggle-radio').addEventListener('click', () => {
       player.unMute();
       player.playVideo();
       btn.textContent = 'Pause Radio';
-
-      noteInterval = setInterval(emitMusicNote, 800);
+      noteInterval = setInterval(emitMusicNote, 800); // Start emitting notes
     } else {
       player.pauseVideo();
       player.mute();
       btn.textContent = 'Play Radio';
-
-      clearInterval(noteInterval);
+      clearInterval(noteInterval); // Stop emitting notes
     }
-  }
-});
   }
 });
 
@@ -366,31 +298,18 @@ document.getElementById('station-selector').addEventListener('change', (e) => {
   const station = stations[selected];
   if (player && station) {
     player.loadVideoById(station.id);
+    // If playing, ensure it continues playing after changing station
+    if (!player.isMuted()) {
+      player.playVideo();
+    }
   }
 });
+
 document.getElementById('community-events-btn').addEventListener('click', () => {
-  window.location.href = 'community.html'; // or whatever your page is called
+  window.location.href = 'community.html';
 });
 
-window.addEventListener('storage', (e) => {
-  if (e.key === 'urbanBloomOrder' || e.key === 'urbanBloomVisits') {
-   growCity();
-  }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  growCity();
-  updateWeatherSeasonDisplay();
-  startDayNightCycle();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  growCity(); // your main city build logic
-  updateWeatherSeasonDisplay(); // make weather show up
-});
-let noteY = 0; // offset to stack notes
-
-//music notes
+// Music Notes Visual Effect
 function emitMusicNote() {
   const note = document.createElement('div');
   note.className = 'music-note';
@@ -399,79 +318,88 @@ function emitMusicNote() {
   const radio = document.getElementById('radio-controls');
   const rect = radio.getBoundingClientRect();
 
-  // Fixed X: center above the radio
-  note.style.left = `${rect.left + rect.width / 2}px`;
-
-  // Vary Y slightly for a natural rise from the same place
-  note.style.top = `${rect.top - 10}px`;
+  // Position notes to float up from above the radio controls
+  // Add some randomness to horizontal position
+  const randomXOffset = (Math.random() - 0.5) * 50; // -25 to +25 pixels
+  note.style.left = `${rect.left + rect.width / 2 + randomXOffset}px`;
+  note.style.top = `${rect.top - 10}px`; // Start slightly above the radio
 
   document.body.appendChild(note);
 
+  // Remove note after animation (adjust to match CSS animation duration)
   setTimeout(() => {
     note.remove();
-  }, 2000);
+  }, 2000); // Assuming CSS animation is 2s
 }
 
-// Kick it all off!
-growCity();
-updateWeatherSeasonDisplay();
-startDayNightCycle();
-displayHolidays();
 
-window.onload = function () {
-  growCity(); // or however you're initializing things
-  updateWeatherSeasonDisplay(); // MUST be called here
-  setHolidayTheme();
-  applyTranslations();
-};
-
+// Holiday functions
 function displayHolidays() {
   const holidayList = document.getElementById('holiday-list');
   const currentMonth = new Date().getMonth(); // 0-indexed
 
    const holidays = [
-  { date: 'January 1', month: 0, name: "🎉 Bloom Year's Day", desc: "Start fresh with fireworks and confetti!" },
-  { date: 'February 14', month: 1, name: "💖🌳 LoveTree Day", desc: "Plant trees for your loved ones!" },
-  { date: 'April 22', month: 3, name: "🌍 EcoFest", desc: "Celebrate sustainability together!" },
-  { date: 'July 20', month: 6, name: "☀️ Sunny Bash", desc: "Fun, music, and sunshine!" },
-  { date: 'October 31', month: 9, name: "🎃 Halloween", desc: "Glowing costumes and spooky vibes!" },
-  { date: 'December 24', month: 11, name: "❄️ Christmas", desc: "Lanterns, peace, and snow." },
-  { date: 'June 3', month: 5, name: "🌸 UrbanBloom Birthday", desc: "Celebrating the day UrbanBloom sprang to life at 19:11!" },
-  { date: 'January 27', month: 0, name: "✨ Digital Spark Festival", desc: "Celebrate the city going online — and secret sparks of genius!" },
-  { date: 'June 6', month: 5, name: "🍩 National Donut Day", desc: "Celebrate with sweet rings of joy all around UrbanBloom!"}
-];
+    // Ensure the months match the current month from getCurrentSeason logic for Southern Hemisphere display
+    { date: 'January 1', month: 0, name: "🎉 Bloom Year's Day", desc: "Start fresh with fireworks and confetti!" },
+    { date: 'February 14', month: 1, name: "💖🌳 LoveTree Day", desc: "Plant trees for your loved ones!" },
+    { date: 'March 20', month: 2, name: "🍂 Autumn Equinox", desc: "A perfect balance of light and dark for introspection." }, // Added for Southern Hemisphere autumn
+    { date: 'April 22', month: 3, name: "🌍 EcoFest", desc: "Celebrate sustainability together!" },
+    { date: 'June 3', month: 5, name: "🌸 UrbanBloom Birthday", desc: "Celebrating the day UrbanBloom sprang to life at 19:11!" },
+    { date: 'June 6', month: 5, name: "🍩 National Donut Day", desc: "Celebrate with sweet rings of joy all around UrbanBloom!"},
+    { date: 'June 20', month: 5, name: "❄️ Winter Solstice", desc: "Longest night, perfect for stargazing and cozy gatherings." }, // Added for Southern Hemisphere winter
+    { date: 'July 20', month: 6, name: "☀️ Sunny Bash", desc: "Fun, music, and sunshine!" }, // Still fits here, but perhaps rename for winter celebration?
+    { date: 'September 22', month: 8, name: "🌷 Spring Equinox", desc: "Embrace renewal as nature awakens with vibrant colors." }, // Added for Southern Hemisphere spring
+    { date: 'October 31', month: 9, name: "🎃 Halloween", desc: "Glowing costumes and spooky vibes!" },
+    { date: 'December 21', month: 11, name: "☀️ Summer Solstice", desc: "Longest day, time for beach parties and outdoor fun!" }, // Added for Southern Hemisphere summer
+    { date: 'December 24', month: 11, name: "❄️ Christmas", desc: "Lanterns, peace, and snow." },
+    { date: 'January 27', month: 0, name: "✨ Digital Spark Festival", desc: "Celebrate the city going online — and secret sparks of genius!" },
+  ];
+
 
   // Filter holidays for current month
   const thisMonthHolidays = holidays.filter(h => h.month === currentMonth);
 
-  holidayList.innerHTML = '';
+  if (holidayList) { // Check if holidayList exists
+    holidayList.innerHTML = '';
 
-  if (thisMonthHolidays.length === 0) {
-    holidayList.innerHTML = '<li>No special events this month... maybe invent one? 😜</li>';
-  } else {
-    thisMonthHolidays.forEach(h => {
-      const li = document.createElement('li');
-      li.innerHTML = `<strong>${h.name}</strong> (${h.date}) – ${h.desc}`;
-      holidayList.appendChild(li);
-    });
+    if (thisMonthHolidays.length === 0) {
+      holidayList.innerHTML = '<li>No special events this month... maybe invent one? 😜</li>';
+    } else {
+      thisMonthHolidays.forEach(h => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${h.name}</strong> (${h.date}) – ${h.desc}`;
+        holidayList.appendChild(li);
+      });
+    }
   }
 }
+
 function setHolidayTheme() {
   const now = new Date();
+  // Ensure consistency: use same locale for date formatting if needed, or stick to month/date numbers
   const today = `${now.getMonth() + 1}/${now.getDate()}`; // e.g., "6/6"
   const body = document.body;
 
   const holidayThemes = {
     "1/1": "newyear",
     "2/14": "lovetree",
+    "3/20": "autumn-equinox", // New: for Southern Hemisphere
     "4/22": "ecofest",
     "6/3": "birthday",
-    "6/6": "donut",       
+    "6/6": "donut",
+    "6/20": "winter-solstice", // New: for Southern Hemisphere
     "7/20": "sunnybash",
+    "9/22": "spring-equinox", // New: for Southern Hemisphere
     "10/31": "halloween",
+    "12/21": "summer-solstice", // New: for Southern Hemisphere
     "12/24": "christmas",
     "1/27": "digitalspark"
   };
+
+  // Remove any previous holiday themes
+  Object.values(holidayThemes).forEach(theme => {
+    body.classList.remove(`theme-${theme}`);
+  });
 
   const themeKey = holidayThemes[today];
   if (themeKey) {
@@ -479,3 +407,23 @@ function setHolidayTheme() {
     console.log(`🎉 Holiday theme applied: ${themeKey}`);
   }
 }
+
+// Initial setup and Firebase listeners on DOM ready
+document.addEventListener("DOMContentLoaded", async () => {
+  await growCity(); // Initial city load and display
+  updateWeatherSeasonDisplay(); // Display season/weather
+  updateDateTimeDisplay(); // Start the clock
+  startDayNightCycle(); // Start day/night cycle animation
+  displayHolidays(); // Display holidays for the current month
+  setHolidayTheme(); // Apply holiday specific themes if any
+
+  // Firebase listeners for real-time updates to the city
+  // These will trigger growCity() when data changes in Firebase
+  onValue(ref(database, "buildOrder"), () => growCity());
+  onValue(ref(database, "visits"), () => growCity());
+});
+
+// The `window.onload` is generally less preferred than `DOMContentLoaded`
+// as `DOMContentLoaded` fires when the DOM is ready, while `onload` waits for all assets (images, etc.)
+// For this application, DOMContentLoaded is sufficient and usually faster.
+// Removed the redundant window.onload from your original code.

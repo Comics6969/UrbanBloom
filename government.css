@@ -51,3 +51,86 @@ footer a:hover {
 #return-btn:hover {
   background-color: #ffc04d;
 }
+#calendar {
+  max-width: 600px;      /* Smaller width */
+  font-size: 0.85rem;     /* Smaller text */
+  margin: 1rem auto;
+  background: #fefefe;
+  padding: 0.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.fc-toolbar-title {
+  font-size: 1.1rem !important;
+}
+
+.fc-daygrid-day-number {
+  font-size: 0.8rem;
+}
+
+.fc-event-title {
+  font-size: 0.75rem;
+}
+
+.fc-button {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+
+/* calender info*/
+#calendar-container {
+  display: flex;
+  gap: 0.5rem; /* reduced spacing */
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 900px;
+  margin: 1rem auto;
+  flex-wrap: nowrap;
+}
+}
+
+#calendar {
+  flex: 0 0 600px;  /* fixed size to prevent shrinking */
+  min-width: 300px;
+}
+
+#holiday-info {
+  flex-shrink: 0;
+  width: 200px;
+  background: #fffbe9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+#holiday-info.show {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+#close-holiday-info:hover {
+  color: #c0392b;
+}
+
+#holiday-info {
+  min-height: 120px; /* consistent height */
+}
+
+@media (max-width: 700px) {
+  #calendar-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #holiday-info {
+    width: 90%;
+    margin-top: 1rem;
+  }
+}
