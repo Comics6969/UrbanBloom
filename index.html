@@ -7,36 +7,53 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="daytime">
-  <h1>🌆 Welcome to UrbanBloom</h1>
-  <p>Your visits grow the city. Keep coming back!</p>
+
+  <!-- Main Content -->
+  <h1 id="title">🌆 Welcome to UrbanBloom</h1>
+  <p id="desc">Your visits grow the city. Keep coming back!</p>
+
   <div id="status" class="status-box"></div>
-  <div id="season-display"></div>
-<div id="weather-display"></div>
-<div id="datetime-display" style="margin-top: 10px; font-weight: bold;"></div>
-</div>
-  </div>
+
+  <p><strong id="season-label">Season:</strong> <span id="season-display"></span></p>
+  <p><strong id="weather-label">Weather:</strong> <span id="weather-display"></span></p>
+  <p><strong id="datetime-label">UrbanBloom Time:</strong> <span id="datetime-display" style="font-weight: bold;"></span></p>
+
+  <!-- Holidays -->
   <section id="holiday-calendar">
-  <h2>📅 UrbanBloom Calendar</h2>
-  <ul id="holiday-list"></ul>
-</section>
+    <h2 id="holidays-label">📅 UrbanBloom Calendar</h2>
+    <ul id="holiday-list"></ul>
+  </section>
+
+  <!-- Buttons -->
   <button id="community-events-btn">🌟 Community Events</button>
+  <button id="government-btn" onclick="location.href='government.html'">🏛️ Government</button>
   
+  <!-- Radio -->
+  <div id="radio-controls">
+    <button id="toggle-radio">Pause Radio</button>
+    <select id="station-selector">
+      <option value="urbanchill">Urban Chill</option>
+      <option value="naturevibes">Nature Vibes</option>
+      <option value="sunsetsynth">Sunset Synth</option>
+    </select>
+  </div>
 
+  <!-- Player + City -->
   <div id="player"></div>
-  <button id="toggle-music">Pause Music</button>
-
   <div id="city"></div>
 
+  <!-- Footer -->
+  <footer>
+   <p><span id="follow-label">Follow me for more vibes:</span>
+  <a href="https://www.youtube.com/@FC-BS" target="YouTube">Youtube</a> |
+  <a href="https://x.com/nghiatr23118906" target="X">X (Twitter)</a> |
+  <a href="https://www.twitch.tv/funnycomicsbrawlstars" target="Twitch">Twitch</a> |
+  <a href="https://www.instagram.com/funnycomicsbrawlstars" target="Instagram">Instagram</a> |
+  <a href="https://linktr.ee/nghiaductran" target="linktree">Linktree</a>
+</p>
+  </footer>
+
+  <!-- Script -->
   <script src="script.js"></script>
-<br>
-  <footer>  
-    <p>Follow me for more vibes:  
-        <a href="https://www.youtube.com/@FC-BS" target="YouTube"> Youtube</a> |  
-        <a href="https://x.com/nghiatr23118906" target="X (formerly twitter)"> X (formerly twitter)</a> |  
-        <a href="https://www.twitch.tv/funnycomicsbrawlstars" target="Twitch">Twitch</a> |  
-        <a href="https://www.instagram.com/funnycomicsbrawlstars" target="Instagram">Instagram</a> |
-        <a href="https://linktr.ee/nghiaductran?ltsid=f0e5b05d-e8c7-4ca7-aeb5-d23fda2ac877" target="linktree">Linktree</a> |
-    </p>
-</footer>
 </body>
 </html>

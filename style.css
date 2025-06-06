@@ -6,6 +6,10 @@ body {
   text-align: center;
 }
 
+body * {
+  user-select: none;
+}
+
 html, body {
   height: 100%;
   margin: 0;
@@ -191,29 +195,69 @@ footer a:hover {
   pointer-events: none; /* So it doesn't interfere with clicks */
   z-index: 1000; /* Make sure it's on top but invisible */
 }
-
-/* Style the play/pause toggle button */
-#toggle-music {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 8px 16px;
+#toggle-radio {
+  padding: 6px 14px;
   background-color: #222;
   color: #eee;
   border: none;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 0.85;
   transition: opacity 0.3s ease;
-  z-index: 1001; /* Above player */
 }
 
-#toggle-music:hover {
+#toggle-radio:hover {
   opacity: 1;
   background-color: #444;
 }
 
+#radio-controls {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  z-index: 1000;
+  width: auto;
+  min-width: 140px;
+}
+
+#radio-controls select,
+#radio-controls button {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+}
+
+.music-note {
+  position: fixed;
+  font-size: 1.2rem;
+  opacity: 0.9;
+  animation: floatNoteUp 2s ease-out forwards;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+@keyframes floatNoteUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* make elements easier to see at night */
 .nighttime .label,
 .nighttime .emoji {
   color: #fff !important;
@@ -303,3 +347,65 @@ body.autumn::before {
     transform: translateX(-50%) translateY(-100vh);
     opacity: 0;
   }}
+
+/*holiday theme */
+.theme-bloomyearday {
+  background: linear-gradient(to bottom right, #ffefba, #ffffff);
+}
+
+body.theme-lovetree {
+  background: #ffe6f0;
+}
+
+body.theme-ecofest {
+  background: #e0fbe0;
+}
+
+body.theme-sunnybash {
+  background: #fff8dc;
+}
+
+body.theme-halloween {
+  background: #2c1b10;
+  color: #ffa500;
+}
+
+body.theme-christmas {
+  background: #f8f8f8 url('images/christmas-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.theme-digitalspark {
+  background: #1e1e2f;
+  color: #ffccff;
+}
+
+body.theme-donut {
+  background: linear-gradient(to right, #fef3f3, #ffe9d6);
+  color: #5a3e36;
+}
+
+body, #city-grid, .building, header, footer, .stats-panel {
+  position: relative;
+  z-index: 1;
+}
+
+#government-btn {
+  position: fixed;
+  top: 70px;
+  right: 20px; 
+  background-color: #88c9bf;
+  color: #1e1e1e;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  transition: background-color 0.3s ease;
+}
+
+#government-btn:hover {
+  background-color: #6dbcb0;
+}

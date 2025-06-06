@@ -1,0 +1,53 @@
+ .gov-panel {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #fefefe;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.gov-panel section {
+  margin-bottom: 2rem;
+}
+
+.gov-panel h2 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+
+footer {
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ccc;
+  text-align: center;
+}
+
+footer a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+#return-btn {
+  background-color: #ffd580;
+  color: #222;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+#return-btn:hover {
+  background-color: #ffc04d;
+}

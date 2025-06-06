@@ -286,50 +286,88 @@ function startDayNightCycle() {
 }
 
 
+const stations = {
+  urbanchill: { id: "7XXu_-eoxHo", name: "Urban Chill" },
+  naturevibes: { id: "9GaBMZRHM3U", name: "Nature Vibes" },
+  sunsetsynth: { id: "ot5UsNymqgQ", name: "Sunset Synth" }
+};
 
-// Load YouTube IFrame API
-var tag = document.createElement('script');
+let currentStation = "urbanchill";
+let player;
+
+// Load the YouTube IFrame API
+const tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 document.body.appendChild(tag);
 
-var player;
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
-    height: '0',      // Hide player by setting height and width to 0
+    height: '0',
     width: '0',
-    videoId: '7XXu_-eoxHo', 
+    videoId: stations[currentStation].id,
     playerVars: {
       autoplay: 1,
       loop: 1,
-      playlist: '7XXu_-eoxHo', 
+      playlist: stations[currentStation].id,
       controls: 0,
       modestbranding: 1,
       iv_load_policy: 3,
-      mute: 1 // Start muted so autoplay works on most browsers
+      mute: 1
     },
     events: {
-      onReady: function(event) {
+      onReady: (event) => {
         event.target.playVideo();
       }
     }
   });
 }
 
-// Play/Pause toggle
-document.getElementById('toggle-music').addEventListener('click', () => {
+// Toggle play/pause
+document.getElementById('toggle-radio').addEventListener('click', () => {
   if (player) {
     if (player.isMuted()) {
       player.unMute();
       player.playVideo();
-      document.getElementById('toggle-music').textContent = 'Pause Music';
+      document.getElementById('toggle-radio').textContent = 'Pause Radio';
     } else {
       player.pauseVideo();
       player.mute();
-      document.getElementById('toggle-music').textContent = 'Play Music';
+      document.getElementById('toggle-radio').textContent = 'Play Radio';
+    }
+
+    let noteInterval;
+
+document.getElementById('toggle-radio').addEventListener('click', () => {
+  if (player) {
+    const btn = document.getElementById('toggle-radio');
+
+    if (player.isMuted()) {
+      player.unMute();
+      player.playVideo();
+      btn.textContent = 'Pause Radio';
+
+      noteInterval = setInterval(emitMusicNote, 800);
+    } else {
+      player.pauseVideo();
+      player.mute();
+      btn.textContent = 'Play Radio';
+
+      clearInterval(noteInterval);
     }
   }
 });
+  }
+});
 
+// Switch station
+document.getElementById('station-selector').addEventListener('change', (e) => {
+  const selected = e.target.value;
+  currentStation = selected;
+  const station = stations[selected];
+  if (player && station) {
+    player.loadVideoById(station.id);
+  }
+});
 document.getElementById('community-events-btn').addEventListener('click', () => {
   window.location.href = 'community.html'; // or whatever your page is called
 });
@@ -350,6 +388,29 @@ document.addEventListener("DOMContentLoaded", () => {
   growCity(); // your main city build logic
   updateWeatherSeasonDisplay(); // make weather show up
 });
+let noteY = 0; // offset to stack notes
+
+//music notes
+function emitMusicNote() {
+  const note = document.createElement('div');
+  note.className = 'music-note';
+  note.textContent = ['🎵', '🎶'][Math.floor(Math.random() * 2)];
+
+  const radio = document.getElementById('radio-controls');
+  const rect = radio.getBoundingClientRect();
+
+  // Fixed X: center above the radio
+  note.style.left = `${rect.left + rect.width / 2}px`;
+
+  // Vary Y slightly for a natural rise from the same place
+  note.style.top = `${rect.top - 10}px`;
+
+  document.body.appendChild(note);
+
+  setTimeout(() => {
+    note.remove();
+  }, 2000);
+}
 
 // Kick it all off!
 growCity();
@@ -360,6 +421,8 @@ displayHolidays();
 window.onload = function () {
   growCity(); // or however you're initializing things
   updateWeatherSeasonDisplay(); // MUST be called here
+  setHolidayTheme();
+  applyTranslations();
 };
 
 function displayHolidays() {
@@ -375,6 +438,7 @@ function displayHolidays() {
   { date: 'December 24', month: 11, name: "❄️ Christmas", desc: "Lanterns, peace, and snow." },
   { date: 'June 3', month: 5, name: "🌸 UrbanBloom Birthday", desc: "Celebrating the day UrbanBloom sprang to life at 19:11!" },
   { date: 'January 27', month: 0, name: "✨ Digital Spark Festival", desc: "Celebrate the city going online — and secret sparks of genius!" },
+  { date: 'June 6', month: 5, name: "🍩 National Donut Day", desc: "Celebrate with sweet rings of joy all around UrbanBloom!"}
 ];
 
   // Filter holidays for current month
@@ -390,5 +454,28 @@ function displayHolidays() {
       li.innerHTML = `<strong>${h.name}</strong> (${h.date}) – ${h.desc}`;
       holidayList.appendChild(li);
     });
+  }
+}
+function setHolidayTheme() {
+  const now = new Date();
+  const today = `${now.getMonth() + 1}/${now.getDate()}`; // e.g., "6/6"
+  const body = document.body;
+
+  const holidayThemes = {
+    "1/1": "newyear",
+    "2/14": "lovetree",
+    "4/22": "ecofest",
+    "6/3": "birthday",
+    "6/6": "donut",       
+    "7/20": "sunnybash",
+    "10/31": "halloween",
+    "12/24": "christmas",
+    "1/27": "digitalspark"
+  };
+
+  const themeKey = holidayThemes[today];
+  if (themeKey) {
+    body.classList.add(`theme-${themeKey}`);
+    console.log(`🎉 Holiday theme applied: ${themeKey}`);
   }
 }
